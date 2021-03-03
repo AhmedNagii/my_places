@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:my_places/helpers/db_helper.dart';
+import 'package:my_places/helpers/location_helper.dart';
 import 'package:my_places/models/place.dart';
 
 class GreatPlaces with ChangeNotifier {
@@ -11,15 +12,22 @@ class GreatPlaces with ChangeNotifier {
     return [..._items]; //just copy of items
   }
 
-  void addPlace(
+  Future<void> addPlace(
     String pickedTitle,
     File pickedImage,
-  ) {
+    PlaceLocation pickedLocation,
+  ) async {
+    final address = await LocationHelper.getPlaceAddress(
+        pickedLocation.latitude, pickedLocation.longitude);
+    final updatedLocation = PlaceLocation(
+        latitude: pickedLocation.latitude,
+        longitude: pickedLocation.longitude,
+        address: address);
     final newPlace = Place(
         id: DateTime.now().toString(),
         image: pickedImage,
         title: pickedTitle,
-        location: null);
+        location: updatedLocation);
     _items.add(newPlace);
     notifyListeners();
     DBHelper.insert("Palaces", {
