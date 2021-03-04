@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_places/providers/great_places.dart';
+import 'package:my_places/screens/place_detail_screen.dart';
 import 'package:provider/provider.dart';
 import '../screens/add_place_screen.dart';
 
@@ -31,23 +32,28 @@ class PlacesListScreen extends StatelessWidget {
               : Consumer<GreatPlaces>(
                   child:
                       Center(child: Text("Got no Places yet, start add some!")),
-                  builder: (ctx, greatPlaces, ch) =>
-                      greatPlaces.items.length <= 0
-                          ? ch
-                          : ListView.builder(
-                              itemCount: greatPlaces.items.length,
-                              itemBuilder: (ctx, index) => ListTile(
-                                leading: CircleAvatar(
-                                  backgroundImage: FileImage(
-                                    greatPlaces.items[index].image,
-                                  ),
-                                ),
-                                title: Text(greatPlaces.items[index].title),
-                                onTap: () {
-                                  //go to detail page
-                                },
+                  builder: (ctx, greatPlaces, ch) => greatPlaces.items.length <=
+                          0
+                      ? ch
+                      : ListView.builder(
+                          itemCount: greatPlaces.items.length,
+                          itemBuilder: (ctx, index) => ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage: FileImage(
+                                greatPlaces.items[index].image,
                               ),
                             ),
+                            title: Text(greatPlaces.items[index].title),
+                            subtitle:
+                                Text(greatPlaces.items[index].location.address),
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                PlaceDetailScreen.routName,
+                                arguments: greatPlaces.items[index].id,
+                              );
+                            },
+                          ),
+                        ),
                 ),
         ),
       ),
